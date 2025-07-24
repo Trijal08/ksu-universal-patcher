@@ -276,6 +276,7 @@ jobs:
           working-directory: './kernel-src'
           run: |
             shopt -s globstar
+            rm -f ./scripts/config; wget https://raw.githubusercontent.com/torvalds/linux/refs/heads/master/scripts/config -O ./scripts/config; chmod a+x ./scripts/config
 
             # Generate kernel config using make
             if [ ${{ github.event.inputs.KERNEL_COMPILER }} == 'Clang/LLVM' ]; then
