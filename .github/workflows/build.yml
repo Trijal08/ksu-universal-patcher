@@ -294,7 +294,7 @@ jobs:
                     if [ ${{ github.event.inputs.KERNEL_ARCH }} == 'arm' ]; then
                         make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf-gcc CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out ${{ github.event.inputs.KERNEL_CONFIGS }}
                     else
-                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu-gcc CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- -j$(nproc --all) O=out ${{ github.event.inputs.KERNEL_CONFIGS }}
+                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu-gcc CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE_ARM32=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out ${{ github.event.inputs.KERNEL_CONFIGS }}
                     fi
                 fi
             fi
@@ -310,7 +310,7 @@ jobs:
                     if [ ${{ github.event.inputs.KERNEL_ARCH }} == 'arm' ]; then
                         make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=clang CLANG_TRIPLE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out ${{ github.event.inputs.KERNEL_CONFIGS }}
                     else
-                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=clang CLANG_TRIPLE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- -j$(nproc --all) O=out ${{ github.event.inputs.KERNEL_CONFIGS }}
+                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=clang CLANG_TRIPLE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE_ARM32=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out ${{ github.event.inputs.KERNEL_CONFIGS }}
                     fi
                 fi
             fi
@@ -357,7 +357,7 @@ jobs:
                     if [ ${{ github.event.inputs.KERNEL_ARCH }} == 'arm' ]; then
                         make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf-gcc CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out
                     else
-                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu-gcc CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- -j$(nproc --all) O=out
+                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu-gcc CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE_ARM32=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out
                     fi
                 fi
             fi
@@ -373,7 +373,7 @@ jobs:
                     if [ ${{ github.event.inputs.KERNEL_ARCH }} == 'arm' ]; then
                         make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=clang CLANG_TRIPLE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out
                     else
-                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=clang CLANG_TRIPLE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- -j$(nproc --all) O=out
+                        make ARCH=${{ github.event.inputs.KERNEL_ARCH }} CC=clang CLANG_TRIPLE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-aarch64-none-linux-gnu*/bin)/aarch64-none-linux-gnu- CROSS_COMPILE_ARM32=$(realpath ~/**/arm-gnu-toolchain-*-x86_64-arm-none-linux-gnu*/bin)/arm-none-linux-gnueabihf- -j$(nproc --all) O=out
                     fi
                 fi
             fi
