@@ -137,15 +137,19 @@ jobs:
             sudo apt build-dep -y linux
 
             # Install clang and LLVM
-            LATEST_LLVM_TOOLCHAIN=$(curl -sSf https://api.github.com/repos/llvm/llvm-project/releases/latest | grep browser_download_url | cut -d '"' -f 4 | grep -wi "Linux-X64.tar.xz"$)
-            wget $LATEST_LLVM_TOOLCHAIN -O ./LLVM-latest-Linux-X64.tar.xz
-            tar --wildcards -xvpf ./LLVM-latest-Linux-X64.tar.xz --warning=no-file-changed --ignore-failed-read || true
-            rm -rf *.tar.xz
+            if grep -iqE "Clang|LLVM" <<< ${{ github.event.inputs.KERNEL_COMPILER }} && [ -z ${{ github.event.inputs.KERNEL_COMPILER_TOOLCHAIN }} ]; then
+                LATEST_LLVM_TOOLCHAIN=$(curl -sSf https://api.github.com/repos/llvm/llvm-project/releases/latest | grep browser_download_url | cut -d '"' -f 4 | grep -wi "Linux-X64.tar.xz"$)
+                wget $LATEST_LLVM_TOOLCHAIN -O ./LLVM-latest-Linux-X64.tar.xz
+                tar --wildcards -xvpf ./LLVM-latest-Linux-X64.tar.xz --warning=no-file-changed --ignore-failed-read || true
+                rm -rf *.tar.xz
+            fi
 
             # Install GCC for aarch64 and arm(32)
-            wget https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-linux-gnueabihf.tar.xz https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
-            for file in *.tar.xz; do tar --wildcards -xvpf $file --warning=no-file-changed --ignore-failed-read || true; done
-            rm -rf *.tar.xz
+            if grep -iqE "GCC|Binutils" <<< ${{ github.event.inputs.KERNEL_COMPILER }} && [ -z ${{ github.event.inputs.KERNEL_COMPILER_TOOLCHAIN }} ]; then
+                wget https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-linux-gnueabihf.tar.xz https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+                for file in *.tar.xz; do tar --wildcards -xvpf $file --warning=no-file-changed --ignore-failed-read || true; done
+                rm -rf *.tar.xz
+            fi
 
             # Install some general dependencies
             sudo apt-get install -y p7zip-full tar bzip2 unrar gzip zip unzip python3-dev repo
