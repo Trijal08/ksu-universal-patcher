@@ -3,19 +3,6 @@ on:
     workflow_dispatch:
         # Various inputs to simplify usage of workflow.
         inputs:
-            KSU_GIT:
-                description: 'Link to KernelSU git repository (leave it be for KernelSU-Next or if unsure):'
-                required: false
-                default: 'https://github.com/KernelSU-Next/KernelSU-Next.git'
-            KSU_GIT_BRANCH:
-                description: 'Preferred branch of the preferred KernelSU git repository (leave it be for KernelSU-Next, otherwise must define):'
-                required: false
-                default: 'next'
-            INCLUDE_SUSFS:
-                type: boolean
-                description: 'Build with SuSFS (leave it be if unsure)?'
-                required: false
-                default: false
             KERNEL_GIT:
                 description: 'Link to the git repository of your preferred kernel source:'
                 required: true
@@ -67,15 +54,6 @@ jobs:
                     exit 1
                 else
                     echo "--- Kernel source git link and branch points to an invalid git repo, please specify them properly! ---"
-                    exit 1
-                fi
-                if git ls-remote ${{ github.event.inputs.KSU_GIT }} | grep -w "${{ github.event.inputs.KSU_GIT_BRANCH }}" > /dev/null; then
-                    echo "--- KernelSU git link and branch points to a valid git repo! ---"
-                elif git ls-remote ${{ github.event.inputs.KSU_GIT }} > /dev/null; then
-                    echo "--- KernelSU git link points to a valid git repo, but the branch specified is invalid, please specify the branch properly! ---"
-                    exit 1
-                else
-                    echo "--- KernelSU git link and branch points to an invalid git repo, please specify them properly! ---"
                     exit 1
                 fi
 
@@ -233,51 +211,7 @@ jobs:
         - name: 'Clone any submodules if present'
           working-directory: './kernel-src'
           run: |
-            git submodule init; git submodule update
-
-        - name: 'Patch KernelSU repository into the kernel source'
-          working-directory: './kernel-src'
-          run: |
-            # Revert any old KernelSU patches
-            [ -L "drivers/kernelsu" ] && rm "drivers/kernelsu" && echo "[-] Symlink removed."
-            grep -q "kernelsu" "./drivers/Makefile" && sed -i '/kernelsu/d' "./drivers/Makefile" && echo "[-] Makefile reverted."
-            grep -q "drivers/kernelsu/Kconfig" "./drivers/Kconfig" && sed -i '/drivers\/kernelsu\/Kconfig/d' "./drivers/Kconfig" && echo "[-] Kconfig reverted."
-            if [ -d "./KernelSU*" ]; then
-                rm -rf "./KernelSU*" && echo "[-] KernelSU directory deleted."
-            fi
-
-            # Clone the KernelSU repository
-            if git ls-remote ${{ github.event.inputs.KSU_GIT }} | grep -w "${{ github.event.inputs.KSU_GIT_BRANCH }}" > /dev/null; then
-                echo "--- KernelSU git link and branch points to a valid git repo! ---"
-            	git clone ${{ github.event.inputs.KSU_GIT }} -b ${{ github.event.inputs.KSU_GIT_BRANCH }} ./KernelSU
-            elif git ls-remote ${{ github.event.inputs.KSU_GIT }} > /dev/null; then
-                echo "--- KernelSU git link points to a valid git repo, but the branch specified is invalid, please specify the branch properly! ---"
-                exit 1
-            else
-                echo "--- KernelSU git link and branch points to an invalid git repo, please specify them properly! ---"
-                exit 1
-            fi
-
-            # Apply KernelSU patches
-            ln -sf ../KernelSU/kernel ./drivers/kernelsu
-            grep -q "kernelsu" "./drivers/Makefile" || printf "\nobj-\$(CONFIG_KSU) += kernelsu/\n" >> "./drivers/Makefile" && echo "[+] Modified Makefile."
-            grep -q "source \"drivers/kernelsu/Kconfig\"" "./drivers/Kconfig" || sed -i "/endmenu/i\source \"drivers/kernelsu/Kconfig\"" "./drivers/Kconfig" && echo "[+] Modified Kconfig."
-            echo '[+] Done.'
-
-        - name: 'Patch KernelSU manual scope-minimized hooks into the kernel source'
-          working-directory: './kernel-src'
-          run: |
-            # Clone the repository which contains the patch
-            git clone --depth=1 https://github.com/devnoname120/kernelsu-coccinelle.git
-
-            # Patch the kernel source with scope-minimized hooks
-            ./kernelsu-coccinelle/scope-minimized-hooks/apply.sh .
-
-            # Cleanup
-            rm -rf ./kernelsu-coccinelle/
-
-            # Delete files that may conflict with kernel functionality
-            rm -rf ./android/abi_gki_protected_exports*
+            git submodule update --init --recursive
 
         - name: 'Generate the kernel .config file'
           working-directory: './kernel-src'
